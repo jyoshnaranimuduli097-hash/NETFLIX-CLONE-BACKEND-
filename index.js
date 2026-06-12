@@ -13,9 +13,13 @@ mongoose.connect(process.env.MONGO_URI)
 
 //session
 app.use(session({
-    secret:'mysecret',
-    resave:false,
-    saveUninitialized:false
+    secret: process.env.SESSION_SECRET || 'mysecret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false,
+        sameSite: 'lax'
+    }
 }))
 
 //all middlewares
