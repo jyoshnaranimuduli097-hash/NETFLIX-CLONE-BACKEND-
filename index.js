@@ -36,7 +36,7 @@ app.use(session({
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.set('view engine', 'ejs')
-app.use(express.static('public'))
+app.use(express.static(path.join(__dirname,'public'),{index:false}))
 // login middleware
 let isLogin = (req, res, next) => {
     if (req.session.key) {
@@ -56,7 +56,7 @@ app.get('/login', (req, res) => {
 
 // home route
 app.get('/', isLogin, (req, res) => {
-    res.render('index')
+    res.sendFile(path.join(__dirname,'public','next.html'))
 })
 
 // static file viewer route
