@@ -50,27 +50,77 @@ mongoose.connect(process.env.MONGO_URI)
         process.exit(1);
     })
 
+const dns = require('dns')
+dns.setServers(['8.8.8.8', '1.1.1.1'])
+
+const express = require('express')
+const app = express()
+const mongoose = require('mongoose')
+const bcrypt = require('bcryptjs')
+const session = require('express-session')
+const user = require('./model/database')
+require('dotenv').config({ path: './pass.env' })
+
+const fs = require('fs')
+const path = require('path')
+
 /* =========================
-   LOGIN MIDDLEWARE
+   TRUST PROXY (RENDER FIX)
+========================= */
+app.set("trust proxy", 1)
+
+/* =========================
+   MIDDLEWARES
+========================= */
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.set('view engine', 'ejs')
+
+/* =========================
+   STATIC FILES (IMPORTANT FIX)
+========================= */
+app.use(express.static(path.join(__dirname, 'public')))
+
+/* =========================
+   SESSION CONFIG (FIXED)
+========================= */
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'mysecret',
+    resave: false,
+    saveUninitialized: false,
+    proxy: true,
+    cookie: {
+        secure: true,
+        httpOnly: true,
+        sameSite: "none"
+    }
+}))
+
+/* =========================
+   DB CONNECTION
+========================= */
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log('Database Connected!'))
+    .catch((err) => {
+        console.error('DB Connection Failed:', err)
+        process.exit(1)
+    })
+
+/* =========================
+   LOGIN CHECK MIDDLEWARE
 ========================= */
 const isLogin = (req, res, next) => {
     if (req.session && req.session.key) {
-        return next();
+        return next()
     }
-    res.redirect('/login');
+    return res.redirect('/login')
 }
 
 /* =========================
    ROUTES
 ========================= */
-app.get('/registration', (req, res) => {
-    res.render('registration', { msg: null })
-})
 
-app.get('/login', (req, res) => {
-    res.render('login', { msg: null })
-})
-
+// Home page (FIXED)
 app.get('/', isLogin, (req, res) => {
     res.sendFile('next.html', { root: path.join(__dirname, 'public') })
 })
@@ -79,8 +129,16 @@ app.get('/next', isLogin, (req, res) => {
     res.render('next')
 })
 
+app.get('/login', (req, res) => {
+    res.render('login', { msg: null })
+})
+
+app.get('/registration', (req, res) => {
+    res.render('registration', { msg: null })
+})
+
 /* =========================
-   STATIC FILE READER (FIXED)
+   STATIC VIEWER (FIXED)
 ========================= */
 async function listStaticFiles(directory, base = '') {
     const entries = await fs.promises.readdir(directory, { withFileTypes: true })
@@ -102,28 +160,32 @@ async function listStaticFiles(directory, base = '') {
 
 app.get('/static-viewer', isLogin, async (req, res) => {
     try {
-        const fileList = await listStaticFiles(path.join(__dirname, 'public')) // FIXED TYPO
+        const fileList = await listStaticFiles(path.join(__dirname, 'public'))
         res.render('static-viewer', { files: fileList })
     } catch (err) {
-        console.error('Static viewer error:', err)
-        res.status(500).send('Unable to load static file viewer')
+        console.error(err)
+        res.status(500).send('Error loading files')
     }
 })
 
 /* =========================
-   REGISTRATION
+   REGISTER
 ========================= */
 app.post('/registration', async (req, res) => {
     try {
         const { email, password } = req.body
 
-        const existingUser = await user.findOne({ email })
-        if (existingUser) {
+        const existing = await user.findOne({ email })
+        if (existing) {
             return res.render('registration', { msg: 'User already exists' })
         }
 
         const hashedPassword = await bcrypt.hash(password, 10)
-        await user.create({ email, password: hashedPassword })
+
+        await user.create({
+            email,
+            password: hashedPassword
+        })
 
         res.render('registration', { msg: 'Registration Successful' })
 
@@ -152,9 +214,10 @@ app.post('/login', async (req, res) => {
             return res.render('login', { msg: 'Wrong password' })
         }
 
-        // SESSION FIXED
+        // SESSION SET
         req.session.key = user1._id.toString()
 
+        // FIXED REDIRECT (this prevents "Not Found")
         res.redirect('/')
 
     } catch (err) {
