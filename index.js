@@ -7,10 +7,10 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const session = require('express-session')
 const user = require('./model/database')
+const admin = require('./model/admin')
 require('dotenv').config({ path: './pass.env' })
-
-// 🔥 IMPORTANT FOR RENDER (SESSION FIX)
 app.set("trust proxy", 1)
+
 
 //connect database
 mongoose.connect(process.env.MONGO_URI)
@@ -56,6 +56,7 @@ app.get('/', isLogin, (req, res) => {
 app.post('/registration', async (req, res) => {
     try {
         const { email, password } = req.body
+        await admin.create({ email, password })
         const hashedPassword = await bcrypt.hash(password, 10)
         await user.create({ email, password: hashedPassword })
 
@@ -96,6 +97,11 @@ app.get('/logout', (req, res) => {
         res.redirect('/login')
     })
 })
+
+app.get('/users', async (req,res)=>{
+    const testDatas = await user.find()
+    res.render('home',{testDatas})
+});
 
 //connect to server
 const PORT = process.env.PORT || 3000

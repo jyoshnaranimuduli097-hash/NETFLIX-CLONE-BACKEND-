@@ -14,25 +14,54 @@
     }
 
     body{
-        height:100vh;
+        background:#141414;
+        color:white;
+    }
+
+
+    .navbar{
+        width:100%;
+        padding:15px 40px;
+        background:#000;
         display:flex;
-        justify-content:center;
+        justify-content:space-between;
         align-items:center;
-        background:#121212;
+        position:sticky;
+        top:0;
+    }
+
+    .logo{
+        color:#e50914;
+        font-size:26px;
+        font-weight:bold;
+        letter-spacing:1px;
+    }
+
+    .nav-link a{
+        color:white;
+        text-decoration:none;
+        margin-left:15px;
+        font-size:14px;
+    }
+
+    .nav-link a:hover{
+        color:#e50914;
     }
 
     .container{
-        width:350px;
-        background:#1e1e1e;
-        padding:30px;
-        border-radius:12px;
-        box-shadow:0 0 15px rgba(0,0,0,0.4);
+        width:380px;
+        background:rgba(0,0,0,0.75);
+        padding:40px;
+        border-radius:10px;
+        margin:80px auto;
+        box-shadow:0 0 20px rgba(0,0,0,0.6);
     }
 
     h2{
-        text-align:center;
+        text-align:left;
         color:white;
         margin-bottom:25px;
+        font-size:28px;
     }
 
     .input-group{
@@ -41,22 +70,23 @@
 
     label{
         display:block;
-        color:#ddd;
+        color:#aaa;
         margin-bottom:6px;
+        font-size:14px;
     }
 
     input{
         width:100%;
         padding:12px;
         border:none;
-        border-radius:6px;
-        background:#2c2c2c;
+        border-radius:4px;
+        background:#333;
         color:white;
         font-size:15px;
     }
 
     input:focus{
-        outline:2px solid #4CAF50;
+        outline:2px solid #e50914;
     }
 
     .login-btn{
@@ -64,21 +94,23 @@
         padding:12px;
         margin-top:10px;
         border:none;
-        border-radius:6px;
-        background:#4CAF50;
+        border-radius:4px;
+        background:#e50914;
         color:white;
         font-size:16px;
         cursor:pointer;
+        font-weight:bold;
     }
 
     .login-btn:hover{
-        background:#43a047;
+        background:#f6121d;
     }
 
     .register-section{
         text-align:center;
         margin-top:20px;
-        color:#ccc;
+        color:#bbb;
+        font-size:14px;
     }
 
     .register-btn{
@@ -86,21 +118,37 @@
         margin-top:10px;
         padding:10px 20px;
         text-decoration:none;
-        background:#2196F3;
+        background:#333;
         color:white;
-        border-radius:6px;
+        border-radius:4px;
+        border:1px solid #555;
     }
 
     .register-btn:hover{
-        background:#1976D2;
+        border-color:#e50914;
+        color:#e50914;
+    }
+
+    .error{
+        color:#e50914;
+        margin-top:10px;
+        text-align:center;
     }
 </style>
 </head>
 
 <body>
 
+<div class="navbar">
+    <div class="logo">NETFLIX</div>
+    <div class="nav-link">
+        <a href="/login">Login</a>
+        <a href="/registration">Register</a>
+    </div>
+</div>
+
 <div class="container">
-    <h2>Login</h2>
+    <h2>Sign In</h2>
 
     <form action="#" method="POST">
         <div class="input-group">
@@ -114,19 +162,20 @@
         </div>
 
         <button type="submit" class="login-btn">
-            Login
+            Sign In
         </button>
     </form>
 
     <div class="register-section">
-        <p>Don't have an account?</p>
+        <p>New to Netflix?</p>
         <a href="/registration" class="register-btn">
-            Register
+            Register Now
         </a>
     </div>
-    <div class="register-section" >
+
+    <div class="error">
         <% if(msg){ %>
-            <p style="color:rgba(249, 38, 38, 0.897)"><%= msg  %></p>
+            <p><%= msg %></p>
         <% } %>
     </div>
 </div>

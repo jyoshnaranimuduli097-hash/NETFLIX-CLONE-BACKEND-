@@ -1,0 +1,101 @@
+<%- include('partials/header.ejs')  %>
+
+<style>
+  body {
+    background: #141414;
+    color: #fff;
+    font-family: Arial, sans-serif;
+  }
+
+  .netflix-container {
+    padding: 40px;
+  }
+
+  .netflix-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #e50914;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+
+  .netflix-card {
+    background: #1f1f1f;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  }
+
+  .table {
+    color: #fff;
+  }
+
+  .table thead {
+    background: #e50914;
+    color: white;
+  }
+
+  .table tbody tr {
+    background: #222;
+    transition: 0.3s;
+  }
+
+  .table tbody tr:hover {
+    background: #333;
+    transform: scale(1.01);
+  }
+
+  .table td, .table th {
+    border-color: #333 !important;
+  }
+
+  .netflix-badge {
+    background: #e50914;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+</style>
+
+<!-- content -->
+<main class="netflix-container">
+  <div class="container">
+
+    <div class="netflix-title">
+       All Users
+    </div>
+
+    <div class="netflix-card">
+
+      <div class="d-flex align-items-center mb-3">
+        <span class="netflix-badge">USER DATABASE</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Email</th>
+               <th scope="col">Hashes password</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% testDatas.forEach((data,index)=>{ %>
+              <tr>
+                <td><%= index+1 %></td>
+                <td><%= data.email %></td>
+                <td><%= data.password %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+
+        </table>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer.ejs')  %>

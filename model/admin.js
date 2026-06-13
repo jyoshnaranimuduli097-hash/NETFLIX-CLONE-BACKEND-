@@ -1,16 +1,14 @@
 const mongoose = require('mongoose')
 
+
 let UserSchema = mongoose.Schema({
     email:{
-        type:String,
-        require:true,
-        unique:true
+        type:String,    
     },
     password:{
         type:String,
-        require:true,
     }
 
 })
 
-module.exports=mongoose.model('user',UserSchema)
+module.exports=mongoose.model('admin',UserSchema)

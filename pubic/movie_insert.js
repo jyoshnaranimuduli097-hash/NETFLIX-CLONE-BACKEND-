@@ -57,6 +57,7 @@ const movies=[
     img: "https://upload.wikimedia.org/wikipedia/en/0/0d/Avengers_Endgame_poster.jpg"
   },
   
+  
 ]
 
 
